@@ -1,0 +1,159 @@
+<apex:page standardController="Opportunity" extensions="ForInvoice" applyHtmlTag="false" showHeader="false" renderAs="PDF">
+
+    <html>
+
+    <head>
+        <style type="text/css" media="print">
+            @page :first {
+                margin: 10px;
+                margin-bottom: 150px;
+                margin-top: 75px;
+            }
+
+            @page {
+                size: A4;
+                @top-center {
+
+                    content: element(header);
+                }
+
+                @bottom-center {
+
+                    content: element(footer);
+                }
+            }
+
+            @page: first {
+                .table-info {
+                    padding-top: 50px;
+                }
+            }
+        </style>
+        <style>
+            table tbody tr td {
+                border: 1px solid rgb(153, 153, 153);
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div style="width: 100%; height:220px; background-color: rgb(243, 243, 243); ">
+            <div style="width: 100%; height: 20px; background-color: rgb(255, 87, 34);">
+            </div>
+
+            <div style="padding-top: 30px;">
+                <table style="float: left; padding-left: 40px; ">
+                    <tr>
+                        <td>
+                            <div style="border-radius: 50%;">
+                                <apex:image id="Logo" value="{!$Resource.Logo}" width="60" height="60" alt="logo" />
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+
+
+
+                <div style="display: inline-block; padding-left: 60px">
+                    <p style="font:18px; color:rgb(55,67,82); margin-top:0">{!$User.CompanyName}</p>
+
+                    <p style="margin-top: -20px; color:rgb(55,67,82)">{!$User.Country} {!$User.City} {!$User.Street}</p>
+
+                    <p style="margin-top: -10px; color:rgb(55,67,82)">{!$User.FirstName}</p>
+
+
+                </div>
+
+            </div>
+
+            <table style="float: right; margin-top:-75px; padding-right: 30px;">
+                <tr>
+                    <td height="40" style="padding-left: 10px; font: 24px; color:rgb(127,127,127)">INVOICE</td>
+                </tr>
+                <tr>
+                    <td height="25"></td>
+                </tr>
+                <tr>
+                    <td style=" border-bottom: 1px solid rgb(194, 194, 194);  color: rgb(55, 77, 116);  text-align: center; padding-bottom: 5px">DATE:
+                        <apex:outputText value="{!DAY(TODAY())}-{!MONTH(TODAY())}-{!YEAR(TODAY())}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td height="25"></td>
+                </tr>
+                <tr>
+                    <td style="border-bottom: 1px solid rgb(194, 194, 194);  color: rgb(55, 77, 116); text-align: center; padding-bottom: 5px">INVOICE NO. {!opportunity.Invoice_Number__c}</td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        <div style="margin-left:20px; margin-right:20px">
+            <div style="padding-top: 40px; margin-bottom: -150px;">
+                <span style="color:rgb(55,77,116); font: 14px; font-weight: bold">BILL TO</span>
+                <hr style="color:rgb(194,194,194)" />
+
+
+                <table>
+                    <tr>
+                        <td>{!contact.name}</td>
+                    </tr>
+                    <tr>
+                        <td>{!account.Name}</td>
+                    </tr>
+                    <tr>
+                        <td>{!contact.phone}</td>
+                    </tr>
+                    <tr>
+                        <td>{!contact.email}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <table style=" border-collapse: collapse; margin-top: 185px; width: 100%;">
+            <thead style="background-color: rgb(255, 87, 34); color: white; font-weight: bold;">
+                <tr>
+                    <td style="text-align:center;">PRODUCT NAME</td>
+                    <td style="text-align:center;">QTY</td>
+                    <td style="text-align:center">UNIT PRICE</td>
+                    <td style="text-align:center">TOTAL</td>
+                </tr>
+            </thead>
+            <tbody style="border-collapse: collapse" class="t">
+                <apex:variable value="{!1}" var="i" />
+                <apex:variable value="{!products.size}" var="size" />
+                <apex:repeat value="{!products}" var="pt">
+                    <tr>
+                        <td style="border-bottom: {!IF(i < size, '0', '')}; border-top: {!IF(i != 1, '0', '')}; 
+                        background-color:{!IF(mod(i,2)==1, '', '#f3f3f3')}; text-align:left;">{! pt.Product2.Name }</td>
+                        <td style="border-bottom: {!IF(i < size, '0', '')}; border-top: {!IF(i != 1, '0', '')}; 
+                        background-color:{!IF(mod(i,2)==1, '', '#f3f3f3')}; text-align:center;">{! pt.Quantity }</td>
+                        <td style="border-bottom: {!IF(i < size, '0', '')}; border-top: {!IF(i != 1, '0', '')}; 
+                        background-color:{!IF(mod(i,2)==1, '', '#f3f3f3')}; text-align:right;">{! pt.UnitPrice}</td>
+                        <td style="border-bottom: {!IF(i < size, '0', '')}; border-top: {!IF(i != 1, '0', '')}; 
+                        background-color:{!IF(mod(i,2)==1, '', '#f3f3f3')}; text-align:right;">{! pt.TotalPrice}</td>
+                        <apex:variable value="{!i+1}" var="i" />
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <td style="border: 0; text-align:right;">Balance Due</td>
+                    <td style="border-top: 0; border-left: 0; border-right: 0; text-align:center; padding:5px; background: rgb(244, 204, 204); font-weight: bold;">$ {!TotalPrice}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: block; position: running(footer); width: 100%; background-color: rgb(255, 87, 34); text-align: center; color: white; height: 20px; padding-right: 1px;">
+            {!$User.CompanyName}
+        </div>
+
+    </body>
+
+    </html>
+
+</apex:page>
