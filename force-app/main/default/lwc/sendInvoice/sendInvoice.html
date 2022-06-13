@@ -1,0 +1,16 @@
+<template>
+    <div class="slds-m-around_medium">
+        <template if:true={contactName.data}>
+            <lightning-input label="Name" value={contactName.data.Name} disabled></lightning-input>
+           
+            <lightning-input label="E-mail" value={contactName.data.Email} disabled></lightning-input>
+           
+               
+               <lightning-input label="Subject" value={opp.data.Invoice_Number__c} disabled></lightning-input>
+           
+           <lightning-textarea label="Body" onchange={handleChangeBody} value={emailTemplates.data.Body} ></lightning-textarea>
+        </template>
+            <lightning-button label="View Invoice" title="View Invoice" onclick={handleCLick} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button label="Send" title="Send" onclick={sendEmailAfterEvent} class="slds-m-left_x-small"></lightning-button>
+    </div>
+</template>

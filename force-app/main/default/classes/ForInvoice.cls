@@ -3,7 +3,12 @@ public with sharing class ForInvoice {
 
     public ForInvoice(ApexPages.StandardController stdController){
         this.opportunity=(Opportunity)stdController.getRecord();
+       /* opps=[select Invoice_Number__c, id from Opportunity where id =: opportunity.id];
+        str=opps.Invoice_Number__c;
+        Apexpages.currentPage().getHeaders().put( 'content-disposition', 'inline; filename=' + str + '.pdf' );*/
     }
+
+
 
     Contact contact = null;
 
@@ -28,6 +33,7 @@ public with sharing class ForInvoice {
 
     public List<OpportunityLineItem> getProducts(){
         if(products==null){
+            ids=opportunity.id;
             products=[Select Product2.Name, Quantity, UnitPrice, TotalPrice from OpportunityLineItem where opportunityid =: opportunity.id];
         }
         
@@ -61,6 +67,7 @@ public with sharing class ForInvoice {
         pdfPage.getParameters().put('id',opportunity.Id);
         opps=[select Invoice_Number__c, id from Opportunity where id =: opportunity.id];
         str=opps.Invoice_Number__c;
+    
         Blob pdfBlob; 
         if (!Test.isRunningTest()) { 
             pdfBlob = pdfPage.getContentasPDF(); 

@@ -1,0 +1,4 @@
+<apex:page action="{!attachPDF}" extensions="ForInvoice" standardController="Opportunity">
+    <apex:pageMessages ></apex:pageMessages><!-- included for display of errors should they occur -->
+    <apex:detail inlineEdit="true" relatedList="true"></apex:detail> <!-- included so Opportunity detail information is visible when errors occur -->
+</apex:page>

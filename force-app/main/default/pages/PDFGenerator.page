@@ -4,14 +4,11 @@
 
     <head>
         <style type="text/css" media="print">
-            @page :first {
+            @page {
+                size: A4;
                 margin: 10px;
                 margin-bottom: 150px;
                 margin-top: 75px;
-            }
-
-            @page {
-                size: A4;
                 @top-center {
 
                     content: element(header);
