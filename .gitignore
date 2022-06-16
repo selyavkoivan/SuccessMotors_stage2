@@ -38,6 +38,3 @@ $RECYCLE.BIN/
 
 # Local environment variables
 .env
-
-force-app/main/default/classes/testForInvoice.cls
-force-app/main/default/classes/testForInvoice.cls-meta.xml

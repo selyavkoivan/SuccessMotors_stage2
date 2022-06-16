@@ -15,7 +15,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
     @wire(getContactName,{ids:'$recordId'}) contactName;
     @wire(getOpportunity,{ids:'$recordId'}) opp;
     @wire(retriveFiles,{title:'$opp.data.Invoice_Number__c'}) files;
-    @track body='Какой то случайный текст';
+    @track body='... нужно придумать текст письма клиенту';
 
     handleChangeBody(event){
         this.body=event.target.value;
@@ -52,7 +52,7 @@ this[NavigationMixin.Navigate]({
     }).catch( error => {
         const evt = new ShowToastEvent({
             title: 'Error',
-            message: 'Your email dont send',
+            message: 'Your email don\'t send',
             variant: 'error',
         });
         console.log(error);

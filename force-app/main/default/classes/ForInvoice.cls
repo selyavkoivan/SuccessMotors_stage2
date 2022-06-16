@@ -3,9 +3,6 @@ public with sharing class ForInvoice {
 
     public ForInvoice(ApexPages.StandardController stdController){
         this.opportunity=(Opportunity)stdController.getRecord();
-       /* opps=[select Invoice_Number__c, id from Opportunity where id =: opportunity.id];
-        str=opps.Invoice_Number__c;
-        Apexpages.currentPage().getHeaders().put( 'content-disposition', 'inline; filename=' + str + '.pdf' );*/
     }
 
 
@@ -24,6 +21,9 @@ public with sharing class ForInvoice {
 
     public Account getAccount(){
         if(account==null){
+            if(contact == null) {
+                contact = getContact();
+            }
             account=[SELECT name FROM account WHERE id=:contact.accountid LIMIT 1][0];
         }
         return account;
