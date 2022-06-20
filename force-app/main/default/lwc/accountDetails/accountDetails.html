@@ -1,0 +1,76 @@
+<template>
+    <lightning-card>
+        <template if:true={recordId}>
+            <template if:true={dataForRecord}>
+                <lightning-datatable show-row-number-column key-field="Id" data={dataForRecord} columns={columns}
+                    hide-checkbox-column>
+                </lightning-datatable>
+            </template>
+        </template>
+        <div if:false={dataForRecord}>
+
+            <div class="slds-m-around_medium">
+                <p>Search by name:</p>
+                <lightning-input value={searchAcc} onchange={changeHandlerAcc}></lightning-input>
+                <p>Search by $:</p>
+                <lightning-input type="number" step=".01" formatter="currency" value={searchSum} onchange={changeHandlerSum}></lightning-input>
+               </div>  
+
+            <div class="slds-align_absolute-center">
+                <div class="slds-p-right_xx-small">
+
+                    <lightning-button label="Back" disabled={isPrev} onclick={handlePrev} variant="brand"
+                        icon-name="utility:back" name="prev"></lightning-button>
+                </div>
+
+                <div class="slds-p-left_xx-small">
+                    <lightning-button label="Forward" disabled={isNext} onclick={handleNext} variant="brand"
+                        icon-name="utility:forward" icon-position="right" name="next"></lightning-button>
+                </div>
+            </div>
+            <lightning-accordion class="example-accordion">
+                <template for:each={Accs.data} for:item="acc">
+                    <lightning-accordion-section key={acc.Id} name={acc.Name} label={acc.Name}>
+                        <h3>{acc.Name}</h3>
+                        <h4>Sum of all closed Opportunities : {acc.Amount_Sum__c}$</h4>
+                        <lightning-datatable if:true={acc.Opportunities} show-row-number-column
+                            key-field="acc.Opportunities.Id" data={acc.Opportunities} columns={columns}
+                            hide-checkbox-column onrowaction={handleRowAction}>
+                        </lightning-datatable>
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+
+            <template if:true={openModal}>
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
+                    aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                    <div class="slds-modal slds-fade-in-open slds-backdrop">
+                        <div class="slds-modal__container">
+                            <header class="slds-modal__header">
+                                <lightning-button label="Close" onclick={closeModal} variant="brand"
+                                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                                    icon-name="utility:close" name="close"></lightning-button>
+
+                                <h2 class="slds-modal__title slds-hyphenate">Products:</h2>
+                            </header>
+                            <div class="slds-modal__content slds-p-around_medium">
+                                <template if:true={Products} for:each={Products} for:item="pr">
+                                    <div key={pr.Id}>
+                                        <div>Product Name : {pr.Name}</div>
+                                        <div>Total price : {pr.TotalPrice}$</div>
+                                    </div>
+                                </template>
+                                <template if:false={Products}>
+                                    list of product is empty
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </template>
+
+
+        </div>
+
+    </lightning-card>
+</template>
