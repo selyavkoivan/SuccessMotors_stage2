@@ -1,21 +1,8 @@
-public with sharing class AccountDetails {
+public with sharing class AccountDetailsController {
 
     @AuraEnabled(cacheable=true)
     public static List<Opportunity> getOppoortunitiesForOneAccount(String ids){
         return [SELECT id,name,closedate, createddate, amount FROM Opportunity WHERE accountid =: ids AND isclosed =: true];
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static List<Account> getAccountsWithOpportunities(Integer queryLimit, Integer offset){
-        return [SELECT id, name, Amount_Sum__c,
-        (SELECT id,name,closedate, createddate, amount
-        FROM opportunities WHERE isclosed =: true)
-        FROM account LIMIT : queryLimit OFFSET : offset];
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static Integer getAccountNumber(){
-        return [SELECT COUNT() FROM Account];
     }
 
     @AuraEnabled(cacheable=true)

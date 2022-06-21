@@ -40,4 +40,19 @@ public with sharing class testSendEmailController {
         SendEmailController.sendEmailToController('test', emailAddress, 'test', opp.id, subject);
         Test.stopTest();
     }
+
+    @isTest
+    static void testSendEmailToControllerException(){
+        Opportunity opp= [SELECT id, Invoice_number__c FROM Opportunity WHERE Invoice_number__c =: subject];
+        Test.startTest();
+        SendEmailController.sendEmailToController(null, null,null, null, null);
+        Test.stopTest();
+    }
+
+    @isTest
+    static void testRetriveFiles(){
+        ContentDocument doc = [SELECT id FROM ContentDocument WHERE title =: subject];
+        ContentVersion version = [SELECT Id, Title, FileExtension, ContentDocumentId FROM ContentVersion WHERE ContentDocumentId =: doc.id AND isLatest=:true];
+        System.assertEquals(version, SendEmailController.retriveFiles(subject));
+    }
 }

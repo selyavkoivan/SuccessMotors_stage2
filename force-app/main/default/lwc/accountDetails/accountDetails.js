@@ -6,12 +6,10 @@ import Amount from '@salesforce/schema/Opportunity.Amount';
 import Name from '@salesforce/schema/Opportunity.Name';
 import CloseDate from '@salesforce/schema/Opportunity.CloseDate';
 import CreatedDate from '@salesforce/schema/Opportunity.CreatedDate';
-import getOppoortunitiesForOneAccount from '@salesforce/apex/AccountDetails.getOppoortunitiesForOneAccount';
-import getAccountsWithOpportunities from '@salesforce/apex/AccountDetails.getAccountsWithOpportunities';
-import searchAccountsWithOpportunities from '@salesforce/apex/AccountDetails.searchAccountsWithOpportunities';
-import getAccountNumber from '@salesforce/apex/AccountDetails.getAccountNumber';
-import getProducts from '@salesforce/apex/AccountDetails.getProducts';
-import searchCount from '@salesforce/apex/AccountDetails.searchCount';
+import getOppoortunitiesForOneAccount from '@salesforce/apex/AccountDetailsController.getOppoortunitiesForOneAccount';
+import searchAccountsWithOpportunities from '@salesforce/apex/AccountDetailsController.searchAccountsWithOpportunities';
+import getProducts from '@salesforce/apex/AccountDetailsController.getProducts';
+import searchCount from '@salesforce/apex/AccountDetailsController.searchCount';
 
 const actions = [
     { label: 'Open', name: 'open' },
@@ -32,13 +30,10 @@ const columns=[
 export default class AccountDetails extends NavigationMixin(LightningElement)   {
     columns = columns;
 
-    @api objectApiName;
     @api recordId;
-
 
     @track searchAcc = '';
     @track searchSum = 0;
-
     @track countOnPage = 10; 
     @track offset = 0; 
     @track dataForRecord;
@@ -49,9 +44,9 @@ export default class AccountDetails extends NavigationMixin(LightningElement)   
     @track isPrev = true;
     @track isNext;
     @track totalCount;
-    Products
+    @track Products
     
-    @wire(getOppoortunitiesForOneAccount,{ids :'$recordId'}) infoAboutOneAccount(result){
+    @wire(getOppoortunitiesForOneAccount,{ids :'$recordId'}) handleGetOpportunitiesForOneAccountResult(result){
         if(result.data){
             if(result.data.length >= 1){
                 this.dataForRecord = result.data;
@@ -60,11 +55,15 @@ export default class AccountDetails extends NavigationMixin(LightningElement)   
                 console.log('error with one account');
             }
         }
-    }  
+    }
 
+    @wire(searchAccountsWithOpportunities,{queryLimit :'$countOnPage', offset : '$offset', 
+    accountName : '$searchAcc', price : '$searchSum'}) handleSearchAccountsWithOpportunitiesResult(result) {
+        this.Accs = result;
+        this.editButtonsStatus();
+    };
 
-    @wire(searchAccountsWithOpportunities,{queryLimit :'$countOnPage', offset : '$offset', accountName : '$searchAcc', price : '$searchSum'}) Accs;
-    @wire(searchCount,{accountName : '$searchAcc', price : '$searchSum'}) infoAboutCount(result){
+    @wire(searchCount,{accountName : '$searchAcc', price : '$searchSum'}) handleSearchCountResult(result){
         this.totalCount = result.data;
         this.offset = 0;
         this.editButtonsStatus();
@@ -78,12 +77,10 @@ export default class AccountDetails extends NavigationMixin(LightningElement)   
 
     handleNext(){
         this.offset = this.offset + this.countOnPage;
-        this.editButtonsStatus();
     }
  
     handlePrev(){
         this.offset = this.offset - this.countOnPage;
-        this.editButtonsStatus();
     }
 
     handleRowAction(event) {
