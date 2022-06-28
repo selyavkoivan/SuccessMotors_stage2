@@ -3,7 +3,7 @@
     <apiVersion>52.0</apiVersion>
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
-    <label>pdfrep1</label>
+    <label>pdfPage</label>
     <packageVersions>
         <majorNumber>1</majorNumber>
         <minorNumber>20</minorNumber>

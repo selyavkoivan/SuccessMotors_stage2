@@ -24,18 +24,14 @@ global class myHandler implements Messaging.InboundEmailHandler {
 			String fieldName ='StageName';
 
 			Schema.SObjectType s = Schema.getGlobalDescribe().get(objectName);
-            System.debug(s);
 			Schema.DescribeSObjectResult r = s.getDescribe();
-            System.debug(r);
 			Map<String,Schema.SObjectField> fields = r.fields.getMap();
-            System.debug(fields);
 			Schema.DescribeFieldResult fieldResult = fields.get(fieldName).getDescribe();
-            System.debug(fieldResult);
-			List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+			List<Schema.PicklistEntry> picklist = fieldResult.getPicklistValues();
 
-        	for(Integer i = 0; i < ple.size(); i++) {
-                if(opp.StageName == ple[i].getValue()) {
-                    opp.StageName = ple[i+1].getValue();
+        	for(Integer i = 0; i < picklist.size(); i++) {
+                if(opp.StageName == picklist[i].getValue()) {
+                    opp.StageName = picklist[i+1].getValue();
                     break;
                 }
         	}

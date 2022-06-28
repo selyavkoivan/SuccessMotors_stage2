@@ -10,7 +10,7 @@ public with sharing class testMyHandler {
         Messaging.InboundEmail email = new Messaging.InboundEmail() ;
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
-        email.plainTextBody = 'teset';
+        email.plainTextBody = 'qwertyuiop';
         email.fromAddress = emailAddress;
         email.subject = subject;
 

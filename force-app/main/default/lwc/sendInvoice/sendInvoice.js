@@ -20,43 +20,45 @@ export default class sendInv extends NavigationMixin(LightningElement) {
     handleChangeBody(event){
         this.body=event.target.value;
     }
+    
     handleCLick(){
       
-        console.log(this.body);
-this[NavigationMixin.Navigate]({
-    type: 'standard__namedPage',
-    attributes: {
-        pageName: 'filePreview'
-    },
-    state : {
-        recordIds:this.files.data.ContentDocumentId,
-        selectedRecordId:this.files.data.ContentDocumentId
-    }
-  });
-    }
-  sendEmailAfterEvent(){
-      if(this.body == '... нужно придумать текст письма клиенту') {
-          this.body = this.emailTemplates.data.Body;
-      }
-      let subjects=this.opp.data.Invoice_Number__c;
-    const recordInput = {body: this.body, toSend: this.contactName.data.Email,subject: subjects, opportunityId: this.opp.data.Id, invoiceNumber: this.opp.data.Invoice_Number__c};//You can send parameters
-    sendEmailToController(recordInput)
-    .then( () => {
-        const evt = new ShowToastEvent({
-            title: 'Success',
-            message: 'Your email send',
-            variant: 'success',
+        this[NavigationMixin.Navigate]({
+                type: 'standard__namedPage',
+                attributes: {
+                pageName: 'filePreview'
+            },
+            state : {
+                recordIds:this.files.data.ContentDocumentId,
+                selectedRecordId:this.files.data.ContentDocumentId
+            }
         });
-        this.dispatchEvent(evt);    
-        this.dispatchEvent(new CloseActionScreenEvent());
-    }).catch( error => {
-        const evt = new ShowToastEvent({
-            title: 'Error',
-            message: 'Your email don\'t send',
-            variant: 'error',
-        });
-        console.log(error);
-        this.dispatchEvent(evt);
-    })
-}
+    }
+
+    sendEmailAfterEvent(){
+        if(this.body == '... нужно придумать текст письма клиенту') {
+            this.body = this.emailTemplates.data.Body;
+        }
+        let subjects=this.opp.data.Invoice_Number__c;
+        const recordInput = {body: this.body, toSend: this.contactName.data.Email,subject: subjects, opportunityId: this.opp.data.Id, invoiceNumber: this.opp.data.Invoice_Number__c};
+        
+        sendEmailToController(recordInput)
+        .then( () => {
+            const evt = new ShowToastEvent({
+                title: 'Success',
+                message: 'Your email send',
+                variant: 'success',
+            });
+            this.dispatchEvent(evt);    
+            this.dispatchEvent(new CloseActionScreenEvent());
+        }).catch( error => {
+            const evt = new ShowToastEvent({
+                title: 'Error',
+                message: 'Your email don\'t send',
+                variant: 'error',
+            });
+            console.log(error);
+            this.dispatchEvent(evt);
+        })
+    }
 }

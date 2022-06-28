@@ -64,40 +64,42 @@ public with sharing class ForInvoice {
 
     public PageReference attachPDF() {
         PageReference pdfPage = Page.PDFGenerator;
-        pdfPage.getParameters().put('id',opportunity.Id);
-        opps=[select Invoice_Number__c, id from Opportunity where id =: opportunity.id];
-        str=opps.Invoice_Number__c;
+        pdfPage.getParameters().put('id', opportunity.Id);
+        opps = [SELECT Invoice_Number__c, id FROM Opportunity WHERE id =: opportunity.id];
+        str = opps.Invoice_Number__c;
     
         Blob pdfBlob; 
+
         if (!Test.isRunningTest()) { 
             pdfBlob = pdfPage.getContentasPDF(); 
         } else { 
             pdfBlob = Blob.valueOf('Some Text');
         }
-        attachment[] attchToDelete=[select  parentId, name, body from attachment where parentId=:opportunity.id and name=:str+'.pdf'];
+
+        attachment[] attchToDelete=[SELECT parentId, name, body FROM attachment WHERE parentId=:opportunity.id AND name=:str+'.pdf'];
         delete attchToDelete;
         
         Attachment attach = new Attachment(parentId = opportunity.Id, Name =str+'.pdf', body = pdfBlob);
         insert attach;
         
-        List<ContentDocument> document=[select id, title from ContentDocument where title=:str limit 1];
+        List<ContentDocument> document=[SELECT id, title FROM ContentDocument WHERE title=:str limit 1];
 
         if(document.size() > 0){
-        ContentVersion v = new ContentVersion();
-        v.versionData=pdfBlob;
-        v.title=str;
-        v.ContentLocation='S';
-        v.PathOnClient=str+'.pdf';
-        v.ContentDocumentId=document[0].id;
-        insert v;
+            ContentVersion version = new ContentVersion();
+            version.versionData = pdfBlob;
+            version.title = str;
+            version.ContentLocation = 'S';
+            version.PathOnClient = str + '.pdf';
+            version.ContentDocumentId = document[0].id;
+            insert version;
         }  
         else{
-            ContentVersion v = new ContentVersion();
-            v.versionData=pdfBlob;
-            v.title=str;
-            v.ContentLocation='S';
-            v.PathOnClient=str+'.pdf';
-            insert v;
+            ContentVersion version = new ContentVersion();
+            version.versionData = pdfBlob;
+            version.title = str;
+            version.ContentLocation = 'S';
+            version.PathOnClient = str+'.pdf';
+            insert version;
         }
         
 
