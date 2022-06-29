@@ -5,10 +5,9 @@ global class myHandler implements Messaging.InboundEmailHandler {
 
         Integer index = email.subject.indexOf('INV-');
 
-        String attachmentName = email.subject.substring(index) + '.pdf';
+        String invoiceNumberName = email.subject.substring(index);
         
-        attachment atach = [SELECT name, id, parentid FROM attachment WHERE name =: attachmentName LIMIT 1];
-        opportunity opp = [SELECT StageName,name FROM opportunity WHERE id=: atach.ParentId];
+        opportunity opp = [SELECT StageName,name FROM opportunity WHERE Invoice_Number__c =: invoiceNumberName LIMIT 1];
         
         Integer indexToApproved = -1;
         Integer indexToRejected = -1;

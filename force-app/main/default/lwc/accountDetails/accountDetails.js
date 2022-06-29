@@ -11,6 +11,11 @@ import searchAccountsWithOpportunities from '@salesforce/apex/AccountDetailsCont
 import getProducts from '@salesforce/apex/AccountDetailsController.getProducts';
 import searchCount from '@salesforce/apex/AccountDetailsController.searchCount';
 
+import prName from '@salesforce/schema/OpportunityLineItem.Name';
+import Quantity from '@salesforce/schema/OpportunityLineItem.Quantity';
+import UnitPrice from '@salesforce/schema/OpportunityLineItem.UnitPrice';
+import TotalPrice from '@salesforce/schema/OpportunityLineItem.TotalPrice';
+
 const actions = [
     { label: 'Open', name: 'open' },
 ];
@@ -27,11 +32,24 @@ const columns=[
     }
 ]
 
+const productColumns=[
+    { label: 'Name', fieldName: prName.fieldApiName, type: 'text'},
+    { label: 'Quantity', fieldName: Quantity.fieldApiName, type: 'text'},
+    { label: 'Unit Price', fieldName: UnitPrice.fieldApiName, type: 'currency',
+    typeAttributes: { maximumFractionDigits: '2' }},
+    { label: 'Total Price', fieldName: TotalPrice.fieldApiName, type: 'currency',
+    typeAttributes: { maximumFractionDigits: '2' }}
+]
+
 export default class AccountDetails extends NavigationMixin(LightningElement)   {
     columns = columns;
 
+    productColumns = productColumns;
+
+
     @api recordId;
 
+    @track isRendered = false;
     @track searchAcc = '';
     @track searchSum = 0;
     @track countOnPage = 10; 
@@ -60,6 +78,7 @@ export default class AccountDetails extends NavigationMixin(LightningElement)   
     @wire(searchAccountsWithOpportunities,{queryLimit :'$countOnPage', offset : '$offset', 
     accountName : '$searchAcc', price : '$searchSum'}) handleSearchAccountsWithOpportunitiesResult(result) {
         this.Accs = result;
+        this.isRendered = false;
         this.editButtonsStatus();
     };
 
@@ -122,5 +141,19 @@ export default class AccountDetails extends NavigationMixin(LightningElement)   
 
     changeHandlerAcc(event) {
         this.searchAcc = event.target.value;
+    }
+
+    renderedCallback() {
+
+        let sections = this.template.querySelectorAll('lightning-accordion-section')
+        
+        if(sections.length != 0 && !this.isRendered) {
+            this.isRendered = true;
+
+            sections.forEach((currentValue, index, array) => {
+                currentValue.label =  currentValue.name + " " + currentValue.label + "$"
+            })
+            
+        }
     }
 }

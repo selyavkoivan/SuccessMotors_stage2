@@ -28,10 +28,10 @@
                         icon-name="utility:forward" icon-position="right" name="next"></lightning-button>
                 </div>
             </div>
-            <lightning-accordion class="example-accordion">
+            <lightning-accordion allow-multiple-sections-open class="example-accordion">
                 <template for:each={Accs.data} for:item="acc">
-                    <lightning-accordion-section key={acc.Id} name={acc.Name} label={acc.Name}>
-                        <h3>{acc.Name}</h3>
+                    <lightning-accordion-section  key={acc.Id} name={acc.Name} label={acc.Amount_Sum__c}>
+                        <h3>{acc.Name} {acc.Amount_Sum__c}$</h3>
                         <h4>Sum of all closed Opportunities : {acc.Amount_Sum__c}$</h4>
                         <lightning-datatable if:true={acc.Opportunities} show-row-number-column
                             key-field="acc.Opportunities.Id" data={acc.Opportunities} columns={columns}
@@ -54,11 +54,11 @@
                                 <h2 class="slds-modal__title slds-hyphenate">Products:</h2>
                             </header>
                             <div class="slds-modal__content slds-p-around_medium">
-                                <template if:true={Products} for:each={Products} for:item="pr">
-                                    <div key={pr.Id}>
-                                        <div>Product Name : {pr.Name}</div>
-                                        <div>Total price : {pr.TotalPrice}$</div>
-                                    </div>
+                              
+                                <template if:true={Products}>
+                                    <lightning-datatable show-row-number-column key-field="Id" data={Products} columns={productColumns}
+                                    hide-checkbox-column>
+                                </lightning-datatable>
                                 </template>
                                 <template if:false={Products}>
                                     list of product is empty
