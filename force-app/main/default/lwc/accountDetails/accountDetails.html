@@ -3,7 +3,7 @@
         <template if:true={recordId}>
             <template if:true={dataForRecord}>
                 <lightning-datatable show-row-number-column key-field="Id" data={dataForRecord} columns={columns}
-                    hide-checkbox-column>
+                    hide-checkbox-column onrowaction={handleRowAction}>
                 </lightning-datatable>
             </template>
         </template>
@@ -41,36 +41,35 @@
                 </template>
             </lightning-accordion>
 
-            <template if:true={openModal}>
-                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large"
-                    aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
-                    <div class="slds-modal slds-fade-in-open slds-backdrop">
-                        <div class="slds-modal__container">
-                            <header class="slds-modal__header">
-                                <lightning-button label="Close" onclick={closeModal} variant="brand"
-                                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
-                                    icon-name="utility:close" name="close"></lightning-button>
-
-                                <h2 class="slds-modal__title slds-hyphenate">Products:</h2>
-                            </header>
-                            <div class="slds-modal__content slds-p-around_medium">
-                              
-                                <template if:true={Products}>
-                                    <lightning-datatable show-row-number-column key-field="Id" data={Products} columns={productColumns}
-                                    hide-checkbox-column>
-                                </lightning-datatable>
-                                </template>
-                                <template if:false={Products}>
-                                    list of product is empty
-                                </template>
-                            </div>
+        </div>
+        <template if:true={openModal}>
+            <section role="dialog" tabindex="-1" class="slds-m-around_medium slds-modal slds-fade-in-open slds-modal_large"
+                aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+                <div class="slds-modal slds-fade-in-open slds-backdrop">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                   onclick={closeModal}>
+                   <lightning-icon icon-name="utility:close" alternative-text="Close Modal" variant="inverse" size="small">
+                   </lightning-icon>
+                </button>
+                            
+                            <h2 class="slds-modal__title slds-hyphenate">Products:</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium">
+                          
+                            <template if:true={Products}>
+                                <lightning-datatable show-row-number-column key-field="Id" data={Products} columns={productColumns}
+                                hide-checkbox-column>
+                            </lightning-datatable>
+                            </template>
+                            <template if:false={Products}>
+                                list of product is empty
+                            </template>
                         </div>
                     </div>
-                </section>
-            </template>
-
-
-        </div>
-
+                </div>
+            </section>
+        </template>
     </lightning-card>
 </template>

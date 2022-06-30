@@ -62,7 +62,7 @@ public with sharing class ForInvoice {
         return opps;
     }
 
-    public PageReference attachPDF() {
+    public PageReference createPDFFile() {
         PageReference pdfPage = Page.PDFGenerator;
         pdfPage.getParameters().put('id', opportunity.Id);
         opps = [SELECT Invoice_Number__c, id FROM Opportunity WHERE id =: opportunity.id];
@@ -76,11 +76,6 @@ public with sharing class ForInvoice {
             pdfBlob = Blob.valueOf('Some Text');
         }
 
-        attachment[] attchToDelete=[SELECT parentId, name, body FROM attachment WHERE parentId=:opportunity.id AND name=:str+'.pdf'];
-        delete attchToDelete;
-        
-        Attachment attach = new Attachment(parentId = opportunity.Id, Name =str+'.pdf', body = pdfBlob);
-        insert attach;
         
         List<ContentDocument> document=[SELECT id, title FROM ContentDocument WHERE title=:str limit 1];
 

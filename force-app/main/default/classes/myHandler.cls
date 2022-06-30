@@ -30,7 +30,7 @@ global class myHandler implements Messaging.InboundEmailHandler {
 
         	for(Integer i = 0; i < picklist.size(); i++) {
                 if(opp.StageName == picklist[i].getValue()) {
-                    opp.StageName = picklist[i+1].getValue();
+                    opp.StageName = picklist[i + 1].getValue();
                     break;
                 }
         	}
@@ -41,7 +41,7 @@ global class myHandler implements Messaging.InboundEmailHandler {
                 System.debug(e);
             }
         }
-        else if(indexToRejected >= 0) {
+        if(indexToRejected >= 0) {
             opp.StageName = 'Closed Lost';
             try {
                 update(opp);

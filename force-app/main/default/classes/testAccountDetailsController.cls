@@ -34,38 +34,51 @@ public with sharing class testAccountDetailsController {
 
     @isTest
     public static void testSearchCountWithNameAndPrice() {
-        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOFAccName  + '%'  AND Amount_Sum__c =: totalAmount];
+        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOFAccName  + '%'  AND Amount_Sum__c =: totalAmount
+        AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(partOFAccName, totalAmount));
     }
 
     @isTest
     public static void testSearchCountWithName() {
-        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOFAccName  + '%'];
+        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOFAccName  + '%' AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(partOFAccName, 0));
     }
 
     @isTest
     public static void testSearchCountWithIncorrectName() {
         String partOfIncorrectName = 'qwertyuiop';
-        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOfIncorrectName  + '%'];
+        Integer count = [SELECT COUNT() FROM account WHERE name LIKE :'%' + partOfIncorrectName  + '%' AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(partOfIncorrectName, 0));
     }
 
     @isTest
     public static void testSearchCountWithPrice() {
-        Integer count = [SELECT COUNT() FROM account WHERE Amount_Sum__c =: totalAmount];
+        Integer count = [SELECT COUNT() FROM account WHERE Amount_Sum__c =: totalAmount AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(null, totalAmount));
     }
 
     @isTest
     public static void testSearchCountWithIncorrectPrice() {
-        Integer count = [SELECT COUNT() FROM account WHERE Amount_Sum__c =: 12];
+        Integer count = [SELECT COUNT() FROM account WHERE Amount_Sum__c =: 12 AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(null, 12));
     }
 
     @isTest
     public static void testSearchCount() {
-        Integer count = [SELECT COUNT() FROM account];
+        Integer count = [SELECT COUNT() FROM account WHERE id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false)];
         System.assertEquals(count, AccountDetailsController.searchCount(null, 0));
     }
 
@@ -86,7 +99,9 @@ public with sharing class testAccountDetailsController {
         List<Account> accs = [SELECT id, name, Amount_Sum__c,
         (SELECT id,name,closedate, createddate, amount
         FROM opportunities WHERE isclosed =: true)
-        FROM account LIMIT : queryLimit OFFSET : offset];
+        FROM account WHERE id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];
         System.assertEquals(accs, AccountDetailsController.searchAccountsWithOpportunities(queryLimit, offset, null, 0));
     }
 
@@ -95,7 +110,9 @@ public with sharing class testAccountDetailsController {
         List<Account> accs = [SELECT id, name, Amount_Sum__c,
         (SELECT id,name,closedate, createddate, amount
         FROM opportunities WHERE isclosed =: true)
-        FROM account WHERE name LIKE :'%' + partOFAccName  + '%'  AND Amount_Sum__c =: totalAmount LIMIT : queryLimit OFFSET : offset];
+        FROM account WHERE name LIKE :'%' + partOFAccName  + '%'  AND Amount_Sum__c =: totalAmount AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];
         System.assertEquals(accs, AccountDetailsController.searchAccountsWithOpportunities(queryLimit, offset, partOFAccName, totalAmount));
     }
 
@@ -104,7 +121,9 @@ public with sharing class testAccountDetailsController {
         List<Account> accs = [SELECT id, name, Amount_Sum__c,
         (SELECT id,name,closedate, createddate, amount
         FROM opportunities WHERE isclosed =: true)
-        FROM account WHERE name LIKE :'%' + partOFAccName  + '%' LIMIT : queryLimit OFFSET : offset];
+        FROM account WHERE name LIKE :'%' + partOFAccName  + '%' AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];
         System.assertEquals(accs, AccountDetailsController.searchAccountsWithOpportunities(queryLimit, offset, partOFAccName, 0));
     }
 
@@ -113,7 +132,9 @@ public with sharing class testAccountDetailsController {
         List<Account> accs = [SELECT id, name, Amount_Sum__c,
         (SELECT id,name,closedate, createddate, amount
         FROM opportunities WHERE isclosed =: true)
-        FROM account WHERE Amount_Sum__c =: totalAmount LIMIT : queryLimit OFFSET : offset];
+        FROM account WHERE Amount_Sum__c =: totalAmount AND id IN (SELECT AccountId
+        FROM Opportunity WHERE isclosed =: true) AND
+        Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];
         System.assertEquals(accs, AccountDetailsController.searchAccountsWithOpportunities(queryLimit, offset, null, totalAmount));
     }
 

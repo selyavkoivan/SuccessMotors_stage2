@@ -72,23 +72,23 @@ public with sharing class testForInvoice {
     }
 
     @isTest
-    static void testAttachPDF() {
+    static void testCreatePDFFile() {
         Opportunity opp = [SELECT id, Invoice_Number__c, name FROM Opportunity WHERE Invoice_Number__c =: Invoice_Number];
         
         ForInvoice ext = getForInvoice(opp); 
 
         System.debug(ext.getOpp()); 
-        System.assertEquals(ext.attachPDF().getUrl(), getPageWhereWeWantToGo(opp).getUrl());
+        System.assertEquals(ext.createPDFFile().getUrl(), getPageWhereWeWantToGo(opp).getUrl());
     }
 
     @isTest
-    static void testAttachPDFWithoutAttachment() {
+    static void testCreatePDFFileWithoutFile() {
         Opportunity opp = [SELECT id, Invoice_Number__c, name FROM Opportunity WHERE Invoice_Number__c =: '' LIMIT 1];
 
         ForInvoice ext = getForInvoice(opp); 
 
         System.debug(ext.getOpp()); 
-        System.assertEquals(ext.attachPDF().getUrl(), getPageWhereWeWantToGo(opp).getUrl());
+        System.assertEquals(ext.createPDFFile().getUrl(), getPageWhereWeWantToGo(opp).getUrl());
     }
 
     static Pagereference getPageWhereWeWantToGo(Opportunity opp) {
