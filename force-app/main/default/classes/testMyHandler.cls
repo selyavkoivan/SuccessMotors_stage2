@@ -1,12 +1,24 @@
-@isTest(SeeAllData=true)
+@isTest
 public with sharing class testMyHandler {
     
 
     static String emailAddress = 'selyavkosh2@gmail.com';
-    static String subject = 'INV-000002';
+    static String subject;
 
+    @TestSetup
+    public static void makeData(){
+        Opportunity opp = new Opportunity(name = 'ddd', closedate=Date.today(), StageName='Prospecting');
+        insert opp;
+    }
+    
+    public static void setupInvoiceNumber() {
+        subject = [SELECT Invoice_Number__c FROM Opportunity][0].Invoice_Number__c;
+    }
+    
     @isTest
     static void testInboundEmailWithoutNormalPlainTextBody(){
+        setupInvoiceNumber();
+        
         Messaging.InboundEmail email = new Messaging.InboundEmail() ;
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
@@ -25,6 +37,7 @@ public with sharing class testMyHandler {
 
     @isTest
     static void testInboundEmailWithApproved(){
+        setupInvoiceNumber();
         Messaging.InboundEmail email = new Messaging.InboundEmail() ;
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 
@@ -43,6 +56,7 @@ public with sharing class testMyHandler {
 
     @isTest
     static void testInboundEmailWithRejected(){
+        setupInvoiceNumber();
         Messaging.InboundEmail email = new Messaging.InboundEmail() ;
         Messaging.InboundEnvelope env = new Messaging.InboundEnvelope();
 

@@ -34,7 +34,8 @@ public with sharing class ForInvoice {
     public List<OpportunityLineItem> getProducts(){
         if(products==null){
             ids=opportunity.id;
-            products=[Select Product2.Name, Quantity, UnitPrice, TotalPrice from OpportunityLineItem where opportunityid =: opportunity.id];
+            products = new List<OpportunityLineItem>();
+            products.addAll([Select Product2.Name, Quantity, UnitPrice, TotalPrice from OpportunityLineItem where opportunityid =: opportunity.id]);
         }
         
         return products;
@@ -76,10 +77,12 @@ public with sharing class ForInvoice {
             pdfBlob = Blob.valueOf('Some Text');
         }
 
+    
         
         List<ContentDocument> document=[SELECT id, title FROM ContentDocument WHERE title=:str limit 1];
-
+        
         if(document.size() > 0){
+            document[0].parentId = opportunity.id;
             ContentVersion version = new ContentVersion();
             version.versionData = pdfBlob;
             version.title = str;
@@ -87,6 +90,16 @@ public with sharing class ForInvoice {
             version.PathOnClient = str + '.pdf';
             version.ContentDocumentId = document[0].id;
             insert version;
+        
+            delete [SELECT id FROM COntentDocumentLink WHERE LinkedEntityId =: opportunity.id];
+
+            ContentDocumentLink link = new ContentDocumentLink();
+            link.LinkedEntityId = opportunity.id;
+            link.Visibility  = 'AllUsers';
+            link.ShareType = 'V';
+            link.ContentDocumentId = document[0].id;
+            insert link;
+
         }  
         else{
             ContentVersion version = new ContentVersion();
@@ -95,7 +108,16 @@ public with sharing class ForInvoice {
             version.ContentLocation = 'S';
             version.PathOnClient = str+'.pdf';
             insert version;
+
+            delete [SELECT id FROM COntentDocumentLink WHERE LinkedEntityId =: opportunity.id];
+
+            ContentDocumentLink link = new ContentDocumentLink();
+            link.LinkedEntityId = opportunity.id;
+            link.Visibility  = 'AllUsers';
+            link.ShareType = 'V';
+            insert link;
         }
+        
         
 
         PageReference pageWhereWeWantToGo = Page.PDFGenerator;

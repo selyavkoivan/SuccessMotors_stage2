@@ -14,8 +14,8 @@ global class myHandler implements Messaging.InboundEmailHandler {
         
         if(opp.StageName != 'Closed Lost' && opp.StageName != 'Closed Won') {
             String emailBody = email.plainTextBody; 
-            indexToApproved = emailBody.indexOf('Approved'); 
-            indexToRejected = emailBody.indexOf('Rejected');
+            indexToApproved = emailBody.toLowercase().indexOf('approved'); 
+            indexToRejected = emailBody.toLowercase().indexOf('rejected');
         } else return result;
 
         if(indexToApproved >= 0) {

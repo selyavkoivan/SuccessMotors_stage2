@@ -6,8 +6,11 @@
                     hide-checkbox-column onrowaction={handleRowAction}>
                 </lightning-datatable>
             </template>
+            <template if:false={dataForRecord}>
+                <h3>There are no closed won Opportunities with products</h3>
+            </template>
         </template>
-        <div if:false={dataForRecord}>
+        <div if:false={recordId}>
 
             <div class="slds-m-around_medium">
                 <p>Search by name:</p>
@@ -31,8 +34,6 @@
             <lightning-accordion allow-multiple-sections-open class="example-accordion">
                 <template for:each={Accs.data} for:item="acc">
                     <lightning-accordion-section  key={acc.Id} name={acc.Name} label={acc.Amount_Sum__c}>
-                        <h3>{acc.Name} {acc.Amount_Sum__c}$</h3>
-                        <h4>Sum of all closed Opportunities : {acc.Amount_Sum__c}$</h4>
                         <lightning-datatable if:true={acc.Opportunities} show-row-number-column
                             key-field="acc.Opportunities.Id" data={acc.Opportunities} columns={columns}
                             hide-checkbox-column onrowaction={handleRowAction}>

@@ -2,7 +2,7 @@ public with sharing class AccountDetailsController {
 
     @AuraEnabled(cacheable=true)
     public static List<Opportunity> getOppoortunitiesForOneAccount(String ids){
-        return [SELECT id,name,closedate, createddate, amount FROM Opportunity WHERE accountid =: ids AND isclosed =: true];
+        return [SELECT id,name,closedate, createddate, amount FROM Opportunity WHERE accountid =: ids AND isclosed =: true AND IsWon=: true AND Count_of_Products__c > 0];
     }
 
     @AuraEnabled(cacheable=true)
@@ -35,7 +35,7 @@ public with sharing class AccountDetailsController {
         if(!String.isBlank(accountName) && price != 0) {
             return [SELECT id, name, Amount_Sum__c,
             (SELECT id,name,closedate, createddate, amount
-            FROM opportunities WHERE isclosed =: true)
+            FROM opportunities WHERE isclosed =: true AND Count_of_Products__c > 0)
             FROM account WHERE name LIKE :'%' + accountName  + '%'  AND Amount_Sum__c =: price
             AND id IN (SELECT AccountId
             FROM Opportunity WHERE isclosed =: true) AND
@@ -43,7 +43,7 @@ public with sharing class AccountDetailsController {
         } else if(!String.isBlank(accountName)) {
             return [SELECT id, name, Amount_Sum__c,
             (SELECT id,name,closedate, createddate, amount
-            FROM opportunities WHERE isclosed =: true)
+            FROM opportunities WHERE isclosed =: true AND Count_of_Products__c > 0)
             FROM account WHERE name LIKE : '%' + accountName  + '%'
             AND id IN (SELECT AccountId
             FROM Opportunity WHERE isclosed =: true) AND
@@ -51,14 +51,14 @@ public with sharing class AccountDetailsController {
         } else if (price != 0) {
             return [SELECT id, name, Amount_Sum__c,
             (SELECT id,name,closedate, createddate, amount
-            FROM opportunities WHERE isclosed =: true)
+            FROM opportunities WHERE isclosed =: true AND Count_of_Products__c > 0)
             FROM account WHERE Amount_Sum__c =: price 
             AND id IN (SELECT AccountId
             FROM Opportunity WHERE isclosed =: true) AND
             Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];
         } else return [SELECT id, name, Amount_Sum__c,
             (SELECT id,name,closedate, createddate, amount
-            FROM opportunities WHERE isclosed =: true)
+            FROM opportunities WHERE isclosed =: true AND Count_of_Products__c > 0)
             FROM account WHERE id IN (SELECT AccountId
             FROM Opportunity WHERE isclosed =: true) AND
             Id NOT IN (SELECT AccountId FROM Opportunity WHERE IsWon=: false) LIMIT : queryLimit OFFSET : offset];

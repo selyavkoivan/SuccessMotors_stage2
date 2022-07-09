@@ -15,7 +15,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
     @wire(getContactName,{ids:'$recordId'}) contactName;
     @wire(getOpportunity,{ids:'$recordId'}) opp;
     @wire(retriveFiles,{title:'$opp.data.Invoice_Number__c'}) files;
-    @track body='... нужно придумать текст письма клиенту';
+    @track body=emailTemplates.data.Body;
 
     handleChangeBody(event){
         this.body=event.target.value;
