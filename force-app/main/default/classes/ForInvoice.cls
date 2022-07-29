@@ -108,14 +108,6 @@ public with sharing class ForInvoice {
             version.ContentLocation = 'S';
             version.PathOnClient = str+'.pdf';
             insert version;
-
-            delete [SELECT id FROM COntentDocumentLink WHERE LinkedEntityId =: opportunity.id];
-
-            ContentDocumentLink link = new ContentDocumentLink();
-            link.LinkedEntityId = opportunity.id;
-            link.Visibility  = 'AllUsers';
-            link.ShareType = 'V';
-            insert link;
         }
         
         

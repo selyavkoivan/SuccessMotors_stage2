@@ -15,7 +15,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
     @wire(getContactName,{ids:'$recordId'}) contactName;
     @wire(getOpportunity,{ids:'$recordId'}) opp;
     @wire(retriveFiles,{title:'$opp.data.Invoice_Number__c'}) files;
-    @track body=emailTemplates.data.Body;
+    @track body;
 
     handleChangeBody(event){
         this.body=event.target.value;
@@ -36,7 +36,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
     }
 
     sendEmailAfterEvent(){
-        if(this.body == '... нужно придумать текст письма клиенту') {
+        if(typeof this.body === 'undefined') {
             this.body = this.emailTemplates.data.Body;
         }
         let subjects=this.opp.data.Invoice_Number__c;
@@ -47,7 +47,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
             const evt = new ShowToastEvent({
                 title: 'Success',
                 message: 'Your email send',
-                variant: 'success',
+                variant: 'success'
             });
             this.dispatchEvent(evt);    
             this.dispatchEvent(new CloseActionScreenEvent());
@@ -55,7 +55,7 @@ export default class sendInv extends NavigationMixin(LightningElement) {
             const evt = new ShowToastEvent({
                 title: 'Error',
                 message: 'Your email don\'t send',
-                variant: 'error',
+                variant: 'error'
             });
             console.log(error);
             this.dispatchEvent(evt);

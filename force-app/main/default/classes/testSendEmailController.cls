@@ -77,15 +77,6 @@ public with sharing class testSendEmailController {
     }
 
     @isTest
-    static void testSendEmailToControllerException(){
-        setupIds();
-        Opportunity opp= [SELECT id, Invoice_number__c FROM Opportunity WHERE Invoice_number__c =: subject];
-        Test.startTest();
-        SendEmailController.sendEmailToController(null, null,null, null, null);
-        Test.stopTest();
-    }
-
-    @isTest
     static void testRetriveFiles(){
         ContentVersion newFile = new ContentVersion();
         newFile.PathOnClient = 'TestFile';
