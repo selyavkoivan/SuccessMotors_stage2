@@ -1,11 +1,10 @@
 global with sharing class MailingBatch implements Database.Batchable<sObject> {
 
     global database.querylocator start(Database.BatchableContext BC){
-        Date today = system.today(); 
+        Date today = System.today(); 
        
         String query = 'SELECT ID, Name, Email, Birthdate FROM Contact WHERE DAY_IN_MONTH(Birthdate) = ' + 
-        today.day() +  ' AND CALENDAR_MONTH(Birthdate) = ' + today.month();
-
+        today.day() + ' AND CALENDAR_MONTH(Birthdate) = ' + today.month();
         return Database.getQueryLocator(query);
     }
    
@@ -20,12 +19,12 @@ global with sharing class MailingBatch implements Database.Batchable<sObject> {
             mail.setBccSender(false); 
             mail.setSaveAsActivity(false); 
             mail.setTargetObjectId(contact.Id);
-            mail.setTemplateId([SELECT Id FROM EmailTemplate WHERE name =: 'birthday email template' LIMIT 1].Id);        
+            mail.setTemplateId([SELECT Id FROM EmailTemplate WHERE name =: 'BirthdayEmailTemplate' LIMIT 1].Id);        
        
             Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
         }
     }
    
-   global void finish(Database.BatchableContext BC){
-   }
+    global void finish(Database.BatchableContext BC){
+    }
 }

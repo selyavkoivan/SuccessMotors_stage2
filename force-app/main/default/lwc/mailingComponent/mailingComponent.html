@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="Schedule" icon-name="custom:custom14">
+              
+         <div class="slds-m-top_small slds-m-bottom_medium slds-m-around_medium">
+              <p>{BatchName} , {ScheduleName}</p>         
+              <template if:true={isWork.data}>  
+                   <div class="slds-p-around_medium lgc-bg">
+                        <lightning-input name="CRON"  disabled="true" required="true" label="CRON String" value={valueCRON.data}></lightning-input>               
+                   </div> 
+                   <lightning-button label="Run once"  onclick={onBatch} variant="brand" name="batch" class="slds-m-left_x-small"></lightning-button> 
+                   <lightning-button label="Abort batch"  onclick={offSchedulable} variant="destructive" name="schedulable" class="slds-m-left_x-small"></lightning-button>  
+              </template>
+              <template if:false={isWork.data}>              
+                   <div class="slds-p-around_medium lgc-bg">
+                        <lightning-input name="CRON"  required="true" label="CRON String" value={valueCRON.data} onchange={changevalueCRON}></lightning-input>              
+                   </div> 
+                   <lightning-button label="Run once"  onclick={onBatch} variant="brand" name="batch" class="slds-m-left_x-small"></lightning-button> 
+                   <lightning-button label="Scheduable batch"  onclick={onSchedulable} variant="brand" name="schedulable" class="slds-m-left_x-small"></lightning-button>  
+              </template>
+         </div>           
+   </lightning-card>
+</template>
